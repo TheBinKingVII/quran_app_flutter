@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quran_app/globals.dart';
+import 'package:quran_app/tabs/hijb_tab.dart';
+import 'package:quran_app/tabs/page_tab.dart';
+import 'package:quran_app/tabs/para_tab.dart';
+import 'package:quran_app/tabs/surah_tab.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,38 +15,86 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: background,
       appBar: _appBar(),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Assalamualaikum',
-              style: GoogleFonts.poppins(
-                  fontSize: 18, fontWeight: FontWeight.w500, color: text),
-            ),
-            const SizedBox(
-              height: 4,
-            ),
-            Text(
-              'Bintoro Linkebin',
-              style: GoogleFonts.poppins(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white),
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            _lastRead()
-          ],
+      body: DefaultTabController(
+        length: 4,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                    SliverToBoxAdapter(
+                      child: _greeting(),
+                    ),
+                    SliverAppBar(
+                      pinned: true,
+                      elevation: 0,
+                      backgroundColor: background,
+                      automaticallyImplyLeading: false,
+                      bottom: PreferredSize(
+                        preferredSize: Size.fromHeight(0),
+                        child: _tab(),
+                      ),
+                    ),
+                  ],
+              body: TabBarView(children: [
+                SurahTab(),
+                ParaTab(),
+                PageTab(),
+                HijbTab(),
+              ])),
         ),
       ),
       bottomNavigationBar: _bottomNavigationBar(),
     );
   }
 
-  //Sampai sini
+  TabBar _tab() {
+    return TabBar(
+        unselectedLabelColor: text,
+        indicatorColor: primary,
+        indicatorWeight: 3,
+        labelColor: Colors.white,
+        tabs: [
+          _tabItem(label: 'Surah'),
+          _tabItem(label: 'Para'),
+          _tabItem(label: 'Page'),
+          _tabItem(label: 'Hijb'),
+        ]);
+  }
+
+  Tab _tabItem({required String label}) {
+    return Tab(
+      child: Text(
+        label,
+        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+
+  Column _greeting() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Assalamualaikum',
+          style: GoogleFonts.poppins(
+              fontSize: 18, fontWeight: FontWeight.w500, color: text),
+        ),
+        const SizedBox(
+          height: 4,
+        ),
+        Text(
+          'Bintoro Linkebin',
+          style: GoogleFonts.poppins(
+              fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white),
+        ),
+        const SizedBox(
+          height: 24,
+        ),
+        _lastRead()
+      ],
+    );
+  }
+
   Stack _lastRead() {
     return Stack(
       children: [
